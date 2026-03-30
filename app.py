@@ -1,23 +1,29 @@
 import json
 
+# Tupla
+fields = ("id", "name", "age", "course", "status")
+
 students = []
 
-# ---------------- FUNCTIONS ----------------
+# -------- FUNCTIONS --------
 
 def add_student():
     try:
-        student_id = input("Enter ID: ")
-        
-        # Check if ID already exists
+        student_id = input("ID: ")
+
         for s in students:
             if s["id"] == student_id:
-                print("ID already exists.")
+                print("ID exists")
                 return
-        
-        name = input("Enter name: ")
-        age = int(input("Enter age: "))
-        course = input("Enter course: ")
-        status = input("Enter status (active/inactive): ")
+
+        name = input("Name: ")
+        age = int(input("Age: "))
+        course = input("Course: ")
+        status = input("Status (active/inactive): ")
+
+        if status != "active" and status != "inactive":
+            print("Invalid status")
+            return
 
         student = {
             "id": student_id,
@@ -28,108 +34,105 @@ def add_student():
         }
 
         students.append(student)
-        print("Student added successfully.")
+        print("Added")
 
-    except ValueError:
-        print("Invalid input.")
+    except:
+        print("Error")
 
 def view_students():
-    if not students:
-        print("No students found.")
+    if len(students) == 0:
+        print("No students")
         return
 
     for s in students:
         print(s)
 
 def search_student():
-    search = input("Enter ID or name: ")
-    found = False
+    x = input("Search ID or name: ")
 
     for s in students:
-        if s["id"] == search or s["name"].lower() == search.lower():
+        if s["id"] == x or s["name"] == x:
             print(s)
-            found = True
+            return
 
-    if not found:
-        print("Student not found.")
+    print("Not found")
 
 def update_student():
-    student_id = input("Enter ID to update: ")
+    student_id = input("ID to update: ")
 
     for s in students:
         if s["id"] == student_id:
-            s["name"] = input("New name: ")
-            s["age"] = int(input("New age: "))
-            s["course"] = input("New course: ")
-            s["status"] = input("New status: ")
-            print("Student updated.")
-            return
+            try:
+                s["name"] = input("New name: ")
+                s["age"] = int(input("New age: "))
+                s["course"] = input("New course: ")
+                s["status"] = input("New status: ")
+                print("Updated")
+                return
+            except:
+                print("Error")
+                return
 
-    print("Student not found.")
+    print("Not found")
 
 def delete_student():
-    student_id = input("Enter ID to delete: ")
+    student_id = input("ID to delete: ")
 
     for s in students:
         if s["id"] == student_id:
             students.remove(s)
-            print("Student deleted.")
+            print("Deleted")
             return
 
-    print("Student not found.")
+    print("Not found")
 
-# ---------------- PERSISTENCE ----------------
+# -------- FILE --------
 
 def save_data():
-    with open("students.json", "w") as file:
-        json.dump(students, file)
-    print("Data saved.")
+    file = open("students.json", "w")
+    json.dump(students, file)
+    file.close()
+    print("Saved")
 
 def load_data():
     global students
     try:
-        with open("students.json", "r") as file:
-            students = json.load(file)
-        print("Data loaded.")
-    except FileNotFoundError:
-        print("No previous data found.")
+        file = open("students.json", "r")
+        students = json.load(file)
+        file.close()
+        print("Loaded")
+    except:
+        print("No file")
 
-# ---------------- MENU ----------------
+# -------- MENU --------
 
 def menu():
     load_data()
+    running = True
 
-    while True:
-        print("\n--- STUDENT SYSTEM ---")
-        print("1. Add student")
-        print("2. View students")
-        print("3. Search student")
-        print("4. Update student")
-        print("5. Delete student")
-        print("6. Save data")
-        print("7. Exit")
+    while running:
+        print("\n1.Add 2.View 3.Search 4.Update 5.Delete 6.Save 7.Exit")
+        op = input("Option: ")
 
-        option = input("Choose an option: ")
-
-        if option == "1":
+        if op == "1":
             add_student()
-        elif option == "2":
+        elif op == "2":
             view_students()
-        elif option == "3":
+        elif op == "3":
             search_student()
-        elif option == "4":
+        elif op == "4":
             update_student()
-        elif option == "5":
+        elif op == "5":
             delete_student()
-        elif option == "6":
+        elif op == "6":
             save_data()
-        elif option == "7":
+        elif op == "7":
             save_data()
-            print("Goodbye.")
-            break
+            print("Bye")
+            running = False
         else:
-            print("Invalid option.")
+            print("Invalid")
 
-# ---------------- RUN ----------------
+# -------- RUN --------
 
 menu()
